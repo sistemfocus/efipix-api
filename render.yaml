@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: interclasse-api
+    env: node
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: CLIENT_ID
+        sync: false # Você configurará isso no dashboard do Render
+      - key: CLIENT_SECRET
+        sync: false
+      - key: CERT_PATH
+        sync: false
