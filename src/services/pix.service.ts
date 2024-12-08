@@ -1,12 +1,12 @@
-import Gerencianet from 'gn-api-sdk-node';
-import { pixConfig } from '../config/pix';
+const Gerencianet = require('gn-api-sdk-node');
+const { pixConfig } = require('../config/pix');
 
 export interface PixRequestPayload {
   valor: string;
   chave: string;
 }
 
-export class PixService {
+class PixService {
   private gn: Gerencianet;
 
   constructor() {
@@ -71,3 +71,5 @@ export class PixService {
     }
   }
 }
+
+module.exports = { PixService };

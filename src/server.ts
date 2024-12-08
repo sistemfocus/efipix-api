@@ -1,8 +1,8 @@
-import express from 'express';
-import cors from 'cors';
-import { pixRouter } from './routes/pix-routes';
-import { configureWebhook } from './config/webhook';
-import { CORS_ORIGIN, PORT } from './config';
+const express = require('express');
+const cors = require('cors');
+const { pixRouter } = require('./routes/pix-routes');
+const { configureWebhook } = require('./config/webhook');
+const { CORS_ORIGIN, PORT } = require('./config');
 
 const app = express();
 

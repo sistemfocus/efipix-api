@@ -1,7 +1,7 @@
-import { Router } from 'express';
-import { PixService, PixRequestPayload } from '../services/pix.service';
+const express = require('express');
+const { PixService, PixRequestPayload } = require('../services/pix.service');
 
-const router = Router();
+const router = express.Router();
 const pixService = new PixService();
 
 // Listar chaves PIX
@@ -33,4 +33,4 @@ router.delete('/', async (req, res) => {
   res.json(response);
 });
 
-export { router as pixRouter };
+module.exports = { pixRouter: router };

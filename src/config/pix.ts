@@ -1,5 +1,4 @@
-import { config } from 'dotenv';
-config();
+require('dotenv').config();
 
 export interface PixConfig {
   clientId: string;
@@ -9,10 +8,12 @@ export interface PixConfig {
   certificatePath: string;
 }
 
-export const pixConfig: PixConfig = {
+const pixConfig: PixConfig = {
   clientId: process.env.CLIENT_ID || '',
   clientSecret: process.env.CLIENT_SECRET || '',
   sandbox: process.env.NODE_ENV !== 'production',
   debug: process.env.NODE_ENV !== 'production',
   certificatePath: process.env.CERT_PATH || ''
 };
+
+module.exports = { pixConfig };
