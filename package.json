@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "type": "module",
   "description": "API de integração com o sistema PIX do EFI Bank",
+  "license": "MIT",
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "build": "tsc",
