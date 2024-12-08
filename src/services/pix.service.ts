@@ -1,4 +1,4 @@
-import { EfiPay } from '@efipay/sdk';
+import Gerencianet from 'gn-api-sdk-node';
 import { pixConfig } from '../config/pix';
 
 export interface PixRequestPayload {
@@ -7,22 +7,21 @@ export interface PixRequestPayload {
 }
 
 export class PixService {
-  private efi: EfiPay;
+  private gn: Gerencianet;
 
   constructor() {
-    this.efi = new EfiPay({
+    this.gn = new Gerencianet({
       client_id: pixConfig.clientId,
       client_secret: pixConfig.clientSecret,
-      certificate: pixConfig.certificatePath,
       sandbox: pixConfig.sandbox,
-      debug: pixConfig.debug
+      certificate: pixConfig.certificatePath
     });
   }
 
   async listarChavesPix() {
     try {
-      const response = await this.efi.call('pixListEvp', {});
-      return response;
+      const response = await this.gn.pixListEvp({});
+      return response.data;
     } catch (error: any) {
       console.error('Erro ao listar chaves PIX:', error);
       return { erro: error.message };
@@ -31,8 +30,8 @@ export class PixService {
 
   async criarChavePix() {
     try {
-      const response = await this.efi.call('pixCreateEvp', {});
-      return response;
+      const response = await this.gn.pixCreateEvp({});
+      return response.data;
     } catch (error: any) {
       console.error('Erro ao criar chave PIX:', error);
       return { erro: error.message };
@@ -41,8 +40,8 @@ export class PixService {
 
   async deletarChavePix(chavePix: string) {
     try {
-      const response = await this.efi.call('pixDeleteEvp', { chave: chavePix });
-      return response;
+      const response = await this.gn.pixDeleteEvp({ chave: chavePix });
+      return response.data;
     } catch (error: any) {
       console.error('Erro ao deletar chave PIX:', error);
       return { erro: error.message };
@@ -64,8 +63,8 @@ export class PixService {
         ]
       };
 
-      const response = await this.efi.call('pixCreateImmediateCharge', {}, body);
-      return response;
+      const response = await this.gn.pixCreateImmediateCharge({}, body);
+      return response.data;
     } catch (error: any) {
       console.error('Erro ao criar QR Code:', error);
       return { erro: error.message };
