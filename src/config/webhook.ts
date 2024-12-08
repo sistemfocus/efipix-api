@@ -1,7 +1,7 @@
 import fs from 'fs';
 import https from 'https';
 import express from 'express';
-import { webhookRouter } from '../routes/webhook';
+import webhookRouter from '../routes/webhook';
 
 export const configureWebhook = (app: express.Application) => {
   app.use('/webhook', webhookRouter);

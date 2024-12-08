@@ -1,10 +1,9 @@
 import express from 'express';
 import fs from 'fs';
 import path from 'path';
-import { EFI_API_URL } from '../config';
 import { TLSSocket } from 'tls';
 
-const router = express.Router();
+const webhookRouter = express.Router();
 
 /**
  * Middleware to verify client certificate
@@ -19,39 +18,29 @@ const verifyClientCertificate = (req: express.Request, res: express.Response, ne
 };
 
 /**
- * POST /webhook/pix
- * Receive PIX payment notifications
+ * POST /webhook
+ * Receive webhook notifications
  */
-router.post('/pix', verifyClientCertificate, (req: express.Request, res: express.Response) => {
-    try {
-        const webhookData = req.body;
+webhookRouter.post('/', verifyClientCertificate, (req: express.Request, res: express.Response) => {
+  try {
+    // Log webhook data for debugging
+    const logData = {
+      timestamp: new Date().toISOString(),
+      headers: req.headers,
+      body: req.body
+    };
 
-        // Log webhook data for debugging
-        console.log('Received PIX webhook:', webhookData);
+    const logPath = path.join(__dirname, '../../logs/webhook.log');
+    fs.appendFileSync(logPath, JSON.stringify(logData, null, 2) + '\n');
 
-        // Save webhook data to a file for persistence
-        const logPath = path.join(__dirname, '../logs/webhooks.json');
-        const currentData = fs.existsSync(logPath) 
-            ? JSON.parse(fs.readFileSync(logPath, 'utf-8')) 
-            : [];
-        
-        currentData.push({
-            timestamp: new Date().toISOString(),
-            data: webhookData
-        });
+    // Process webhook data here
+    // TODO: Implement webhook processing logic
 
-        fs.writeFileSync(logPath, JSON.stringify(currentData, null, 2));
-
-        // TODO: Update order status in database
-        // TODO: Notify frontend about payment confirmation
-
-        return res.status(200).end();
-    } catch (error: any) {
-        console.error('Error processing webhook:', error);
-        return res.status(500).json({
-            error: 'Internal server error'
-        });
-    }
+    res.status(200).json({ message: 'Webhook received successfully' });
+  } catch (error) {
+    console.error('Error processing webhook:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
 });
 
-export default router;
+export default webhookRouter;
