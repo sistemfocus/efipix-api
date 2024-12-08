@@ -2,21 +2,27 @@ import express from 'express';
 import fs from 'fs';
 import path from 'path';
 import { EFI_API_URL } from '../config';
+import { TLSSocket } from 'tls';
 
 const router = express.Router();
+
+/**
+ * Middleware to verify client certificate
+ */
+const verifyClientCertificate = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+  const socket = req.socket as TLSSocket;
+  
+  if (!socket.authorized) {
+    return res.status(401).json({ error: 'Invalid client certificate' });
+  }
+  next();
+};
 
 /**
  * POST /webhook/pix
  * Receive PIX payment notifications
  */
-router.post('/pix', (req, res) => {
-    // Verify if the request was authorized via mTLS
-    if (!req.socket.authorized) {
-        return res.status(401).json({
-            error: 'Unauthorized: Invalid certificate'
-        });
-    }
-
+router.post('/pix', verifyClientCertificate, (req: express.Request, res: express.Response) => {
     try {
         const webhookData = req.body;
 

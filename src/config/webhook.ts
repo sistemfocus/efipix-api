@@ -1,20 +1,23 @@
 import fs from 'fs';
 import https from 'https';
-import { Express } from 'express';
+import express from 'express';
+import { webhookRouter } from '../routes/webhook';
 
-export function configureWebhook(app: Express) {
-    // SSL/TLS configuration for mTLS
-    const httpsOptions = {
-        cert: fs.readFileSync(process.env.SSL_CERT_PATH!), // Your domain's SSL certificate
-        key: fs.readFileSync(process.env.SSL_KEY_PATH!),   // Your domain's private key
-        ca: fs.readFileSync(process.env.EFI_PUBLIC_KEY_PATH!), // EFI's public key for mTLS
-        minVersion: 'TLSv1.2',
-        requestCert: true,
-        rejectUnauthorized: true
-    };
+export const configureWebhook = (app: express.Application) => {
+  app.use('/webhook', webhookRouter);
 
-    // Create HTTPS server with mTLS
-    const httpsServer = https.createServer(httpsOptions, app);
+  const cert = fs.readFileSync(process.env.CERT_PATH);
+  const key = fs.readFileSync(process.env.KEY_PATH);
+  const ca = fs.readFileSync(process.env.CA_PATH);
 
-    return httpsServer;
-}
+  const httpsServer = https.createServer({
+    cert,
+    key,
+    ca,
+    minVersion: 'TLSv1.2' as const,
+    requestCert: true,
+    rejectUnauthorized: true
+  }, app);
+
+  return httpsServer;
+};
