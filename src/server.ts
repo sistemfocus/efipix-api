@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-import { router as pixRouter } from './routes/pix';
+import { pixRouter } from './routes/pix-routes';
 import { configureWebhook } from './config/webhook';
 import { CORS_ORIGIN, PORT } from './config';
 
